@@ -1,0 +1,95 @@
+# Telephone Customer Churn
+
+
+# Data Cleaning and Preparation
+Problem Statement: Analyzing Customer Churn in a Telecommunications Company
+
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv('Telecom_Customer_Churn.csv')
+
+# 1. Explore the dataset
+print(df.head())
+print(df.info())
+print(df.isnull().sum())  # Check for missing values
+
+# 2. Handle missing values
+
+# Option 1: Fill missing values with the median (for numeric columns) or mode (for categorical columns)
+df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')  # Convert 'TotalCharges' to numeric, coercing errors to NaN
+df['TotalCharges'] = df['TotalCharges'].fillna(df['TotalCharges'].median())  # Fill missing numeric data with the median
+
+df['gender'] = df['gender'].fillna(df['gender'].mode()[0])  # Fill missing gender with the most frequent value
+df['Partner'] = df['Partner'].fillna(df['Partner'].mode()[0])  # Fill missing Partner with the most frequent value
+
+# Option 2: Drop rows with missing values (you can use this if you prefer)
+# df = df.dropna()
+
+# 3. Remove duplicate records
+df = df.drop_duplicates()
+
+# 4. Check for inconsistent data and standardize
+# Standardizing string columns (e.g., 'gender', 'PaymentMethod')
+df['gender'] = df['gender'].str.lower().str.strip()
+df['Partner'] = df['Partner'].str.lower().str.strip()
+
+# Standardize categorical columns (for example, 'PaymentMethod', 'InternetService', etc.)
+df['PaymentMethod'] = df['PaymentMethod'].str.lower().str.strip()
+df['InternetService'] = df['InternetService'].str.lower().str.strip()
+
+# 5. Convert columns to the correct data types
+df['tenure'] = df['tenure'].astype(int)  # Ensure 'tenure' is an integer
+
+# Convert 'Churn' to numeric (1 for 'Yes', 0 for 'No')
+df['Churn'] = df['Churn'].map({'Yes': 1, 'No': 0})
+
+# Check the conversion
+print(df['Churn'].head())  # This should now show numeric values (1 or 0)
+
+# 6. Identify and handle outliers (optional, based on domain knowledge or statistical methods)
+# For example, using the IQR (Interquartile Range) method to filter out extreme values:
+Q1 = df['MonthlyCharges'].quantile(0.25)
+Q3 = df['MonthlyCharges'].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+df = df[(df['MonthlyCharges'] >= lower_bound) & (df['MonthlyCharges'] <= upper_bound)]
+
+# 7. Feature engineering (optional)
+# Create new features based on existing ones if relevant (e.g., TotalCharges per tenure)
+df['ChargesPerMonth'] = df['TotalCharges'] / df['tenure']
+
+# 8. Normalize or scale the data if necessary (you can use MinMaxScaler or StandardScaler if needed for ML)
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+
+# Normalize 'MonthlyCharges' and 'TotalCharges'
+df[['MonthlyCharges', 'TotalCharges']] = scaler.fit_transform(df[['MonthlyCharges', 'TotalCharges']])
+
+# 9. Split the dataset into training and testing sets for further analysis or modeling
+from sklearn.model_selection import train_test_split
+
+X = df.drop('Churn', axis=1)  # Features
+y = df['Churn']  # Target variable
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# 10. Export the cleaned dataset for future analysis or modeling
+df.to_csv('Cleaned_Telecom_Customer_Churn.csv', index=False)
+
+print("Data cleaning and preparation completed.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+

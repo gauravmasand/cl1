@@ -1,0 +1,158 @@
+#Problem Statement: Analyzing Air Quality Index (AQI) Trends in a City
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+file_path = 'Measurement_summary.csv'
+df = pd.read_csv(file_path)
+
+# Display the first few rows
+df.head()
+
+# Get information about the dataset structure
+df.info()
+
+# Display summary statistics
+df.describe()
+
+# Check for missing values
+df.isnull().sum()
+
+# Convert 'Measurement date' to datetime
+df['Measurement date'] = pd.to_datetime(df['Measurement date'])
+
+# Sort by date if not already sorted
+df = df.sort_values(by='Measurement date')
+
+
+# Plot SO2 trend
+plt.figure(figsize=(12, 4))
+plt.plot(df['Measurement date'], df['SO2'], color='purple', label='SO2')
+plt.title('SO2 Levels Over Time')
+plt.xlabel('Date')
+plt.ylabel('SO2 Concentration')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot NO2 trend
+plt.figure(figsize=(12, 4))
+plt.plot(df['Measurement date'], df['NO2'], color='blue', label='NO2')
+plt.title('NO2 Levels Over Time')
+plt.xlabel('Date')
+plt.ylabel('NO2 Concentration')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot O3 trend
+plt.figure(figsize=(12, 4))
+plt.plot(df['Measurement date'], df['O3'], color='green', label='O3')
+plt.title('O3 Levels Over Time')
+plt.xlabel('Date')
+plt.ylabel('O3 Concentration')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot CO trend
+plt.figure(figsize=(12, 4))
+plt.plot(df['Measurement date'], df['CO'], color='orange', label='CO')
+plt.title('CO Levels Over Time')
+plt.xlabel('Date')
+plt.ylabel('CO Concentration')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot PM10 trend
+plt.figure(figsize=(12, 4))
+plt.plot(df['Measurement date'], df['PM10'], color='brown', label='PM10')
+plt.title('PM10 Levels Over Time')
+plt.xlabel('Date')
+plt.ylabel('PM10 Concentration')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot PM2.5 trend
+plt.figure(figsize=(12, 4))
+plt.plot(df['Measurement date'], df['PM2.5'], color='red', label='PM2.5')
+plt.title('PM2.5 Levels Over Time')
+plt.xlabel('Date')
+plt.ylabel('PM2.5 Concentration')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+
+# Box plot of pollutant levels
+plt.figure(figsize=(12, 6))
+df[['SO2', 'NO2', 'O3', 'CO', 'PM10', 'PM2.5']].plot(kind='box')
+plt.title('Distribution of Pollutant Levels')
+plt.xlabel('Pollutant')
+plt.ylabel('Concentration')
+plt.show()
+
+
+
+
+# Scatter plot of PM2.5 vs SO2
+plt.figure(figsize=(8, 6))
+plt.scatter(df['SO2'], df['PM2.5'], alpha=0.5, color='purple')
+plt.title('PM2.5 vs SO2')
+plt.xlabel('SO2 Concentration')
+plt.ylabel('PM2.5 Concentration')
+plt.grid(True)
+plt.show()
+
+# Scatter plot of PM2.5 vs NO2
+plt.figure(figsize=(8, 6))
+plt.scatter(df['NO2'], df['PM2.5'], alpha=0.5, color='blue')
+plt.title('PM2.5 vs NO2')
+plt.xlabel('NO2 Concentration')
+plt.ylabel('PM2.5 Concentration')
+plt.grid(True)
+plt.show()
+
+# Scatter plot of PM2.5 vs O3
+plt.figure(figsize=(8, 6))
+plt.scatter(df['O3'], df['PM2.5'], alpha=0.5, color='green')
+plt.title('PM2.5 vs O3')
+plt.xlabel('O3 Concentration')
+plt.ylabel('PM2.5 Concentration')
+plt.grid(True)
+plt.show()
+
+
+
+# Customized PM2.5 trend plot
+plt.figure(figsize=(12, 6))
+plt.plot(df['Measurement date'], df['PM2.5'], color='red', linewidth=2, linestyle='-', marker='o', markersize=4, label='PM2.5')
+plt.title('PM2.5 Trend Over Time')
+plt.xlabel('Date')
+plt.ylabel('PM2.5 Concentration')
+plt.legend(loc='upper left', fontsize='medium')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

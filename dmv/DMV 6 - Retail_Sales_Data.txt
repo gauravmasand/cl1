@@ -1,0 +1,105 @@
+#Problem Statement: Analyzing Sales Performance by Region in a Retail Company
+
+#Task 1: Import the "Retail_Sales_Data.csv" Dataset
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+file_path = 'Retail_Sales_Dataset.csv'
+df = pd.read_csv(file_path)
+
+# Display the first few rows of the dataset
+df.head()
+
+#Task 2: Explore the Dataset to Understand its Structure and Content
+
+# Get basic information about the dataset
+df.info()
+
+# Check summary statistics
+df.describe()
+
+# Identify missing values
+df.isnull().sum()
+
+# Check unique values for important columns like 'Product Category' and 'Gender'
+df['Product Category'].unique()
+df['Gender'].unique()
+
+
+# Check unique values for product category
+df['Product Category'].unique()
+
+#Task 4: Group Sales Data by Product Category and Calculate Total Sales Amount
+
+# Group sales data by 'Product Category' and calculate total sales amount
+sales_by_category = df.groupby('Product Category')['Total Amount'].sum().reset_index()
+
+# Sort by total sales amount in descending order to identify top performers
+sales_by_category = sales_by_category.sort_values(by='Total Amount', ascending=False)
+
+# Display the top product categories by total sales
+sales_by_category
+
+
+#Task 5: Create Bar Plots or Pie Charts to Visualize the Sales Distribution by Product Category
+
+# Bar plot to visualize sales distribution by product category
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Total Amount', y='Product Category', data=sales_by_category)
+plt.title('Sales Distribution by Product Category')
+plt.xlabel('Total Sales Amount')
+plt.ylabel('Product Category')
+plt.show()
+
+# Pie chart to visualize sales distribution by product category
+plt.figure(figsize=(8, 8))
+plt.pie(sales_by_category['Total Amount'], labels=sales_by_category['Product Category'], autopct='%1.1f%%', startangle=140, colors=sns.color_palette("Set2", len(sales_by_category)))
+plt.title('Sales Distribution by Product Category')
+plt.show()
+
+#Task 6: Identify the Top-Performing Product Categories Based on Highest Sales Amount
+
+# Get the top 5 product categories by total sales
+top_categories = sales_by_category.head(5)
+top_categories
+
+#Task 7: Group the Sales Data by Product Category and Other Variables (Optional)
+
+# Group by 'Gender' and 'Product Category' to calculate total sales amount
+sales_by_gender_category = df.groupby(['Gender', 'Product Category'])['Total Amount'].sum().reset_index()
+
+# Display the aggregated data
+sales_by_gender_category
+
+#Task 8: Create Stacked Bar Plots or Grouped Bar Plots to Compare Sales Amounts Across Product Categories and Demographics
+
+# Grouped bar plot to compare sales amounts across different product categories and gender
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Product Category', y='Total Amount', hue='Gender', data=sales_by_gender_category, palette='Set2')
+plt.title('Sales by Gender and Product Category')
+plt.xlabel('Product Category')
+plt.ylabel('Total Sales Amount')
+plt.xticks(rotation=45)
+plt.legend(title='Gender')
+plt.show()
+
+
+
+# Assuming df is already loaded
+# Step 1: Group by Age and Product Category to aggregate sales
+sales_by_age_category = df.groupby(['Age', 'Product Category'])['Total Amount'].sum().reset_index()
+
+# Step 2: Pivot the data for stacked bar plot
+sales_pivot_age = sales_by_age_category.pivot(index='Product Category', columns='Age', values='Total Amount')
+
+# Step 3: Plot stacked bar chart
+sales_pivot_age.plot(kind='bar', stacked=True, figsize=(12, 6), colormap='Set2')
+plt.title('Stacked Sales by Product Category and Age')
+plt.xlabel('Product Category')
+plt.ylabel('Total Sales Amount')
+plt.xticks(rotation=45)
+plt.legend(title='Age')
+plt.show()

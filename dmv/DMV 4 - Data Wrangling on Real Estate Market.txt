@@ -1,0 +1,72 @@
+
+#Problem Statement: Data Wrangling on Real Estate Market
+
+import pandas as pd
+import numpy as np
+
+# 1. Import the dataset
+df = pd.read_csv("RealEstate_Prices.csv")
+
+# 2. Clean column names: Remove spaces and special characters
+df.columns = df.columns.str.strip().str.replace(' ', '_').str.replace('[^A-Za-z0-9_]', '', regex=True)
+
+# Display cleaned column names
+print("Cleaned column names:")
+print(df.columns)
+
+# 3. Handle missing values
+# Check for missing values
+print("\nMissing values in each column:")
+print(df.isnull().sum())
+
+# Option 1: Fill missing values with the median (for numeric columns)
+df['X2_house_age'] = df['X2_house_age'].fillna(df['X2_house_age'].median())
+df['X3_distance_to_the_nearest_MRT_station'] = df['X3_distance_to_the_nearest_MRT_station'].fillna(df['X3_distance_to_the_nearest_MRT_station'].median())
+df['X4_number_of_convenience_stores'] = df['X4_number_of_convenience_stores'].fillna(df['X4_number_of_convenience_stores'].median())
+df['X5_latitude'] = df['X5_latitude'].fillna(df['X5_latitude'].median())
+df['X6_longitude'] = df['X6_longitude'].fillna(df['X6_longitude'].median())
+df['Y_house_price_of_unit_area'] = df['Y_house_price_of_unit_area'].fillna(df['Y_house_price_of_unit_area'].median())
+
+# Option 2: Alternatively, you could drop rows with missing values if preferred:
+# df = df.dropna()
+
+# 4. Filter and subset the data based on specific criteria
+# For example: Filter the dataset to only include properties with house_age greater than 10 years
+df_filtered = df[df['X2_house_age'] > 10]
+
+# 5. Handle categorical variables (if any)
+# There are no categorical variables explicitly mentioned, but if there were, you could use one-hot encoding or label encoding
+# For example, if 'neighborhood' was a column:
+# df = pd.get_dummies(df, columns=['neighborhood'], drop_first=True)  # One-hot encoding for categorical columns
+
+# 6. Aggregate data to calculate summary statistics
+# Example: Calculate average house price of unit area by house age
+avg_price_by_age = df.groupby('X2_house_age')['Y_house_price_of_unit_area'].mean()
+
+print("\nAverage House Price by House Age:")
+print(avg_price_by_age)
+
+# 7. Identify and handle outliers
+# A simple way to identify outliers is by using the IQR (Interquartile Range) method for the 'Y_house_price_of_unit_area' column
+Q1 = df['Y_house_price_of_unit_area'].quantile(0.25)
+Q3 = df['Y_house_price_of_unit_area'].quantile(0.75)
+IQR = Q3 - Q1
+
+# Define lower and upper bounds for outliers
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+# Filter out outliers
+df_cleaned = df[(df['Y_house_price_of_unit_area'] >= lower_bound) & (df['Y_house_price_of_unit_area'] <= upper_bound)]
+
+# Display the cleaned dataframe without outliers
+print("\nData after removing outliers:")
+print(df_cleaned.head())
+
+# 8. Final cleaned dataset
+# Save the cleaned dataset for further analysis or modeling
+df_cleaned.to_csv("Cleaned_RealEstate_Prices.csv", index=False)
+
+# Display the cleaned data summary
+print("\nSummary of cleaned data:")
+print(df_cleaned.describe())
